@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  avatar    String?
+  bio       String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  geminiApiKey  String?
+  geminiKeyHint String?
+
+  documents      Document[]
+  collaborations Collaborator[]
+  comments       Comment[]
+  versions       DocumentVersion[]
+  sharedLinks    SharedLink[]
+  accessRequests AccessRequest[]
+  documentViews  DocumentView[]
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String   @default("Untitled")
+  content   String   @default("")
+  isPublic  Boolean  @default(false)
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner          User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  collaborators  Collaborator[]
+  comments       Comment[]
+  versions       DocumentVersion[]
+  sharedLinks    SharedLink[]
+  accessRequests AccessRequest[]
+  views          DocumentView[]
+}
+
+model Collaborator {
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  role       Role     @default(VIEWER)
+  createdAt  DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+}
+
+model Comment {
+  id           String   @id @default(cuid())
+  content      String
+  documentId   String
+  authorId     String
+  parentId     String?
+  resolved     Boolean  @default(false)
+  selectedText String?
+  fromPos      Int?
+  toPos        Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  document Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+}
+
+model DocumentVersion {
+  id            String   @id @default(cuid())
+  documentId    String
+  authorId      String
+  content       String
+  title         String
+  changeSummary String?
+  createdAt     DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model SharedLink {
+  id          String    @id @default(cuid())
+  documentId  String
+  createdById String
+  token       String    @unique @default(cuid())
+  role        Role      @default(VIEWER)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  document  Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdBy User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+}
+
+model AccessRequest {
+  id            String        @id @default(cuid())
+  documentId    String
+  userId        String
+  requestedRole Role          @default(VIEWER)
+  status        RequestStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+}
+
+model DocumentView {
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  viewedAt   DateTime @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Main bg -->
+  <rect x="3" y="3" width="94" height="94" rx="16" fill="#fde047" stroke="#000" stroke-width="3"/>
+
+  <!-- Doc 1 (back) -->
+  <rect x="23" y="22" width="42" height="52" rx="2" fill="#fff" stroke="#000" stroke-width="3"/>
+  <!-- Doc 1 fold -->
+  <polyline points="52,22 52,34 64,34" fill="#fde047" stroke="#000" stroke-width="3"/>
+
+  <!-- Doc 2 (front, offset) -->
+  <rect x="35" y="30" width="42" height="52" rx="2" fill="#fff" stroke="#000" stroke-width="3"/>
+  <!-- Doc 2 fold -->
+  <polyline points="64,30 64,42 76,42" fill="#fde047" stroke="#000" stroke-width="3"/>
+
+  <!-- Lines on front doc -->
+  <line x1="43" y1="52" x2="69" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <line x1="43" y1="62" x2="69" y2="62" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <line x1="43" y1="72" x2="59" y2="72" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Cursor / collab dot -->
+  <circle cx="69" cy="72" r="5" fill="#000"/>
+  <circle cx="69" cy="72" r="3" fill="#fde047"/>
+</svg>

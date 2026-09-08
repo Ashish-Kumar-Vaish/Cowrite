@@ -1,0 +1,15 @@
+export const TECH_STACK = [
+  "React",
+  "TypeScript",
+  "TipTap",
+  "Yjs",
+  "Hocuspocus",
+  "TailwindCSS",
+  "Node.js",
+  "Express",
+  "PostgreSQL",
+  "Prisma",
+  "Cloudinary",
+  "Redis",
+  "Docker",
+];
