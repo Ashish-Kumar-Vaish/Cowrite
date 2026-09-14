@@ -6,6 +6,41 @@ Cowrite allows multiple users to edit documents concurrently without merge confl
 
 Conflict-free editing is powered by Yjs (CRDT) over WebSockets via Hocuspocus, with document state persisted to Postgres and live sessions coordinated through Redis.
 
+## Architecture
+
+```mermaid
+%%{ init: { "flowchart": { "rankSpacing": 70, "subGraphTitleMargin": { "top": 5, "bottom": 12 } } } }%%
+flowchart TB
+Client["Client (React + Tiptap)"]
+
+subgraph Server ["server container, one Node process"]
+    API["Express API :3000"]
+    WS["Hocuspocus WS :1234"]
+end
+
+Postgres[("Postgres")]
+Redis[("Redis")]
+Gemini["Gemini API"]
+Cloudinary["Cloudinary"]
+Playwright["Playwright (PDF export)"]
+
+Client -- REST --> API
+Client -- "Yjs over WS" --> WS
+
+API --> Postgres
+API --> Redis
+API --> Gemini
+API --> Cloudinary
+API --> Playwright
+
+WS -.-> Postgres
+WS -.-> Redis
+
+%% dotted = Hocuspocus writing doc state back on debounce/disconnect
+%% Postgres: documents, documentVersion tables
+%% Redis: rate limiter, JWT blacklist, Hocuspocus pub/sub extension
+```
+
 ## Stack
 
 **Frontend:** React, TypeScript, Tiptap, Yjs, TailwindCSS  
