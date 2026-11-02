@@ -187,9 +187,7 @@ Expect 50-client concurrent merges to be noticeably slower (~2-3 ops/sec, hundre
 - JWT stored in localStorage, not in an httpOnly cookie. Refresh tokens feature is not implemented.
 - Implement OAuth login flow, allowing users to sign in with Google, GitHub, etc.
 - Add more toolbar buttons, like align left/right, insert table, etc.
-- Ts lwk takes so much time and refactoring, so I'll probably just procrastinate on all of this.
 - Add more AI features, like summarization, grammar correction, etc.
-- Code things for my personal projects that will never see the light of day.
 - Add more UI components, like a live chat feature, a file upload feature, etc.
 - Create dark theme toggle, bookmarks, favorites, folders, etc.
 - Add edit/update comment in UI, api exists already.
