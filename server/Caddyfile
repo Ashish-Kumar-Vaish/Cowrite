@@ -1,0 +1,14 @@
+{
+  admin off
+  auto_https off
+}
+
+:{$PORT} {
+  handle /api/* {
+    reverse_proxy localhost:3000
+  }
+  
+  handle {
+    reverse_proxy localhost:1234
+  }
+}
